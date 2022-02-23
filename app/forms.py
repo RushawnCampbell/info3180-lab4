@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField
-from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 class UploadForm(FlaskForm):
-    fileField = FileField('image upload',validators=[DataRequired()])
+    fileField = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. Ensure your file has a name and is in one of the following formats: png, jpg, jpeg.')])
+
+
+       

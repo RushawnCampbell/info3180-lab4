@@ -43,13 +43,12 @@ def upload():
             fileobj = request.files['fileField']
             cleanedname = secure_filename(fileobj.filename)
         # Get file data and save to your uploads folder
-            if fileobj and cleanedname is not "" and cleanedname.split('.')[1].upper() in app.config['SAFE_FORMATS']:
+            if fileobj and cleanedname is not "":
                 fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
                 flash('File Saved', 'success')
                 return redirect(url_for('home'))
-            else:
-                flash('Illegal file detected. Ensure your file has a name and is in one of the following formats: png, jpg, jpeg.', 'danger')
-       
+                #flash('Illegal file detected. Ensure your file has a name and is in one of the following formats: png, jpg, jpeg.', 'danger')
+    flash_errors(formobject) 
     return render_template('upload.html', formobj = formobject)
 
 

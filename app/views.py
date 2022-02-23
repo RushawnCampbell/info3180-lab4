@@ -8,6 +8,7 @@ import os
 from app import app
 from flask import render_template, request, redirect, url_for, flash, session, abort
 from werkzeug.utils import secure_filename
+from app.forms import UploadForm
 
 
 ###
@@ -23,7 +24,7 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Rushawn Campbell")
 
 
 @app.route('/upload', methods=['POST', 'GET'])
@@ -32,15 +33,24 @@ def upload():
         abort(401)
 
     # Instantiate your form class
+    formobject = UploadForm()
+    if request.method == 'GET':
+        render_template('upload.html', formobj = formobject)
 
     # Validate file upload on submit
     if request.method == 'POST':
+        if formobject.validate_on_submit(): 
+            fileobj = request.files['fileField']
+            cleanedname = secure_filename(fileobj.filename)
         # Get file data and save to your uploads folder
-
-        flash('File Saved', 'success')
-        return redirect(url_for('home'))
-
-    return render_template('upload.html')
+            if fileobj and cleanedname is not "" and cleanedname.split('.')[1].upper() in app.config['SAFE_FORMATS']:
+                fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
+                flash('File Saved', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash('Illegal file detected. Ensure your file has a name and is in one of the following formats: png, jpg, jpeg.', 'danger')
+       
+    return render_template('upload.html', formobj = formobject)
 
 
 @app.route('/login', methods=['POST', 'GET'])

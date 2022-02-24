@@ -96,9 +96,13 @@ def send_text_file(file_name):
 def get_image(filename):
     return send_from_directory(os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
 
-@app.route('/files')
+@app.route('/files', methods=["GET", "POST"])
 def files():
-    return render_template('files.html', filelist = get_uploaded_images(), safeformats=app.config['SAFE_FORMATS'])
+    if not session.get('logged_in'):
+        abort(401)
+
+    if request.method == "GET":
+        return render_template('files.html', filelist = get_uploaded_images(), safeformats=app.config['SAFE_FORMATS'])
 
 @app.after_request
 def add_header(response):

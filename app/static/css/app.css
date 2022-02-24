@@ -1,3 +1,8 @@
 body {
     padding-top: 5rem;
 }
+
+div.gallery{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+}
